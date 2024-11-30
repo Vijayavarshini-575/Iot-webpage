@@ -18,12 +18,12 @@ function Home() {
             setPatientData(data);
         });
 
-        // Listen for live graph data
+        // Listen for graph data
         socket.on('graph_data', (data) => {
-            setGraphData((prevData) => ({
-                graph1: [...prevData.graph1.slice(-50), data.graph1], // Keep last 50 points
-                graph2: [...prevData.graph2.slice(-50), data.graph2],
-                graph3: [...prevData.graph3.slice(-50), data.graph3],
+            setGraphData((prev) => ({
+                graph1: [...prev.graph1, ...data.graph1].slice(-10), // Keep only the last 10 points
+                graph2: [...prev.graph2, ...data.graph2].slice(-10), // Keep only the last 10 points
+                graph3: [...prev.graph3, ...data.graph3].slice(-10)  // Keep only the last 10 points
             }));
         });
 
@@ -79,41 +79,98 @@ function Home() {
             </div>
 
             <div className='charts'>
-                {/* Live Graph 1: Right Leg: X-axis */}
+                {/* Graph 1: Right Leg: X-axis */}
                 <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={graphData.graph1} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                    <LineChart data={graphData.graph1} margin={{ top: 30, right: 30, left: 20, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="time" label={{ value: 'Time', position: 'bottom' }} />
-                        <YAxis label={{ value: 'X-axis Value', angle: -90, position: 'insideLeft' }} />
+                        <YAxis label={{ value: 'Distance', angle: -90, position: 'insideLeft' }} />
                         <Tooltip />
-                        <Legend />
-                        <Line type="monotone" dataKey="x" stroke="#8884d8" />
+                        <Legend
+                            content={(props) => {
+                                const { payload } = props;
+                                return (
+                                    <ul>
+                                        {payload.map((entry, index) => {
+                                            // Hide the 'distance' legend items
+                                            if (entry.dataKey === 'distance') {
+                                                return null; // Remove legend for distance line
+                                            }
+                                            return (
+                                                <li key={`item-${index}`} style={{ color: entry.color }}>
+                                                    {entry.value}
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                );
+                            }}
+                        />
+                        <Line type="monotone" dataKey="distance" stroke="#8884d8" />
                         <text x="50%" y="5%" textAnchor="middle" dominantBaseline="middle" fontSize={16}>Right Leg: X-axis</text>
                     </LineChart>
                 </ResponsiveContainer>
 
-                {/* Live Graph 2: Right Leg: Y-axis */}
+                {/* Graph 2: Right Leg: Y-axis */}
                 <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={graphData.graph2} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                    <LineChart data={graphData.graph2} margin={{ top: 30, right: 30, left: 20, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="time" label={{ value: 'Time', position: 'bottom' }} />
-                        <YAxis label={{ value: 'Y-axis Value', angle: -90, position: 'insideLeft' }} />
+                        <YAxis label={{ value: 'Distance', angle: -90, position: 'insideLeft' }} />
                         <Tooltip />
-                        <Legend />
-                        <Line type="monotone" dataKey="y" stroke="#82ca9d" />
+                        <Legend
+                            content={(props) => {
+                                const { payload } = props;
+                                return (
+                                    <ul>
+                                        {payload.map((entry, index) => {
+                                            // Hide the 'distance' legend items
+                                            if (entry.dataKey === 'distance') {
+                                                return null; // Remove legend for distance line
+                                            }
+                                            return (
+                                                <li key={`item-${index}`} style={{ color: entry.color }}>
+                                                    {entry.value}
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                );
+                            }}
+                        />
+                        <Line type="monotone" dataKey="distance" stroke="#82ca9d" />
                         <text x="50%" y="5%" textAnchor="middle" dominantBaseline="middle" fontSize={16}>Right Leg: Y-axis</text>
                     </LineChart>
                 </ResponsiveContainer>
 
-                {/* Live Graph 3: Right Leg: Z-axis */}
+                {/* Graph 3: Right Leg: Z-axis */}
                 <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={graphData.graph3} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                    <LineChart data={graphData.graph3} margin={{ top: 30, right: 30, left: 20, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="time" label={{ value: 'Time', position: 'bottom' }} />
-                        <YAxis label={{ value: 'Z-axis Value', angle: -90, position: 'insideLeft' }} />
+                        <YAxis label={{ value: 'Distance', angle: -90, position: 'insideLeft' }} />
                         <Tooltip />
-                        <Legend />
-                        <Line type="monotone" dataKey="z" stroke="#ff7300" />
+                        <Legend
+                            content={(props) => {
+                                const { payload } = props;
+                                return (
+                                    <ul>
+                                        {payload.map((entry, index) => {
+                                            // Hide the 'distance' legend items
+                                            if (entry.dataKey === 'distance') {
+                                                return null; // Remove legend for distance line
+                                            }
+                                            return (
+                                                <li key={`item-${index}`} style={{ color: entry.color }}>
+                                                    {entry.value}
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                );
+                            }}
+                        />
+                        <Line type="monotone" dataKey="distance" stroke="#ff7300" />
                         <text x="50%" y="5%" textAnchor="middle" dominantBaseline="middle" fontSize={16}>Right Leg: Z-axis</text>
                     </LineChart>
                 </ResponsiveContainer>
