@@ -18,9 +18,13 @@ function Home() {
             setPatientData(data);
         });
 
-        // Listen for graph data
+        // Listen for live graph data
         socket.on('graph_data', (data) => {
-            setGraphData(data);
+            setGraphData((prevData) => ({
+                graph1: [...prevData.graph1.slice(-50), data.graph1], // Keep last 50 points
+                graph2: [...prevData.graph2.slice(-50), data.graph2],
+                graph3: [...prevData.graph3.slice(-50), data.graph3],
+            }));
         });
 
         // Clean up the connection when the component unmounts
@@ -75,7 +79,7 @@ function Home() {
             </div>
 
             <div className='charts'>
-                {/* Graph 1: Right Leg: X-axis */}
+                {/* Live Graph 1: Right Leg: X-axis */}
                 <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={graphData.graph1} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" />
@@ -88,7 +92,7 @@ function Home() {
                     </LineChart>
                 </ResponsiveContainer>
 
-                {/* Graph 2: Right Leg: Y-axis */}
+                {/* Live Graph 2: Right Leg: Y-axis */}
                 <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={graphData.graph2} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" />
@@ -101,7 +105,7 @@ function Home() {
                     </LineChart>
                 </ResponsiveContainer>
 
-                {/* Graph 3: Right Leg: Z-axis */}
+                {/* Live Graph 3: Right Leg: Z-axis */}
                 <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={graphData.graph3} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" />
